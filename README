@@ -7,7 +7,14 @@ There are four functions defined in this library:
 ### build [ & targets ]
 	Takes n-many arguments and returns an RDF model.  These arguments can be
 		- Strings for relative or absolute pathnames for RDF files
-		- Strings for URI's that resolve to an RDF file online (this is a little futzy atm)
+		- Strings for URI's that resolve to an RDF file online
+		- Vectors for RDF files where the first element is the URI/pathname, 
+			and the second element is the language (when the file suffix isn't sufficient).
+			Valid language strings (following Jena) are:
+				* "RDF/XML"
+				* "N-TRIPLES"
+				* "TTL"
+				* "N3"
 		- Strings for Jena Rules files (must end with ".rules" in the filename...for now)
 		- RDF models previously created with the build function
 		- I suppose you could use a Jena model, since that's the underlying implementation
@@ -34,7 +41,7 @@ There are four functions defined in this library:
 
 ### Build an RDF model with a local TTL file, a remote NT file, and a model pulled from an Endpoint
 	(def c "construct ?x <http://seabass.foo/bar> ?y where { ?y <http://example.org/baz> ?x }")
-	(build "data/my-ontology.ttl" "http://way.out.there/my-data.nt" (pull c "http://my-endpoint/sparql"))
+	(build ["data/my-ontology.rdf" "TTL"] "http://way.out.there/my-data.nt" (pull c "http://my-endpoint/sparql"))
 	
 ### Ask whether a Sparql endpoint is up
 	(ask "ask {}" "http://my-endpoint/sparql")

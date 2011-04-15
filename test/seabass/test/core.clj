@@ -4,7 +4,7 @@
 	(:require 	[incanter.core :as incanter]	))
   
 (deftest local-test
-	(let [ m  (build "data/test.ttl" "data/test.nt") 
+	(let [ m  (build "data/test.ttl" ["data/test.nt" "N-TRIPLES"]) 
 			s1 "select distinct ?p where { ?s ?p ?o }"
 			s2 "prefix sb: <http://seabass.foo/> select ?x ?y where { ?x sb:neighbor ?y }"
 			a1 "prefix sb: <http://seabass.foo/> ask {sb:olivia sb:caught sb:carl}"
@@ -20,11 +20,16 @@
 		
 (deftest remote-test
 	(let [	s1 "select ?x where { ?x a <http://seabass.foo/Fish>  } limit 10"
+			s2 "select ?p where { ?s ?p ?o }"
 			c1 "construct {?x a <http://seabass.foo/Fish>} where { ?x a <http://www4.wiwiss.fu-berlin.de/factbook/ns#Country>}"
 			endpoint "http://www4.wiwiss.fu-berlin.de/factbook/sparql"
+			remote-xml "http://id.southampton.ac.uk/dataset/apps/latest.rdf"
+			remote-ttl "http://id.southampton.ac.uk/dataset/apps/latest.ttl"
 			m (build "data/test.ttl" "data/test.nt")	]
 		(is (= 3 (incanter/nrow (bounce s1 m))))
-		(is (= 10 (incanter/nrow (bounce s1 (build m (pull c1 endpoint))))))	))
+		(is (= 10 (incanter/nrow (bounce s1 (build m (pull c1 endpoint))))))
+		(is (< 0 (incanter/nrow (bounce s2 (build [remote-xml "RDF/XML"])))))
+		(is (< 0 (incanter/nrow (bounce s2 (build [remote-ttl "TTL"])))))	))
 		
 (deftest reasoning-test
 	(let [ m  (build "data/test.ttl" "data/test.nt") 

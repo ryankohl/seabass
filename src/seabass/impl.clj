@@ -11,9 +11,6 @@
 (defn rules?	[x]	(= (str/trim (str/tail 6 x)) ".rules"))
 (defn file?	[x]	(FileUtils/isFile x))
 (defn uri?	[x]	(FileUtils/isURI x))
- 
-(defn make-triple-from-json [subj pred obj tns]
-	(str "_:b" subj " <" tns (str/as-str pred) "> " obj " .")	)
 
 (defn model?	[x]
 	(let [ m "class com.hp.hpl.jena.rdf.model.impl.ModelCom" 
@@ -25,24 +22,31 @@
 	( []
 		(ModelFactory/createDefaultModel)	)
 	( [url-filename]
+		(get-model url-filename (FileUtils/guessLang url-filename))	)
+	( [url-filename lang]
 	(let [		model (get-model)	]
 		(try (let [url (java.net.URL. url-filename)]
-				(.read model url-filename (FileUtils/guessLang url-filename)))
+				(.read model url-filename lang))
 		(catch java.net.MalformedURLException e
-				(.read model (java.io.FileInputStream. url-filename) "" (FileUtils/guessLang url-filename)) )))))
+				(.read model (java.io.FileInputStream. url-filename) "" lang) )))))
 				
-(defn build-impl  [urls]
-	(let [		m				"class com.hp.hpl.jena.rdf.model.impl.ModelCom"
-				i				"class com.hp.hpl.jena.rdf.model.impl.InfModelImpl"
-				core			(ModelFactory/createDefaultModel)
-				config 		(.addProperty (.createResource core) ReasonerVocabulary/PROPruleMode "hybrid")
-				reasoner	(.create (GenericRuleReasonerFactory/theInstance) config) ]
-		(try	(doseq [x urls]	(cond
-											(model? x)		(.add core x)
-											(rules? x)		(.setRules reasoner (Rule/rulesFromURL x))
-											(string? x)		(.add core (get-model x))	))
-				(ModelFactory/createInfModel reasoner core)
-				(catch Exception e nil)	)))
+(defn build-impl  
+	( [urls]
+		(let [		m				"class com.hp.hpl.jena.rdf.model.impl.ModelCom"
+					i				"class com.hp.hpl.jena.rdf.model.impl.InfModelImpl"
+					core			(ModelFactory/createDefaultModel)
+					config 		(.addProperty (.createResource core) ReasonerVocabulary/PROPruleMode "hybrid")
+					reasoner	(.create (GenericRuleReasonerFactory/theInstance) config) ]
+			(try	(doseq [x urls]	(cond
+												(vector? x)		(.add core (get-model (nth x 0) (nth x 1)))
+												(model? x)		(.add core x)
+												(rules? x)		(.setRules reasoner (Rule/rulesFromURL x))
+												(string? x)		(.add core (get-model x))	))
+					(ModelFactory/createInfModel reasoner core)	
+					(catch Exception e e)	)))
+	( [url lang]
+		(try (.read (ModelFactory/createDefaultModel) url lang)
+			(catch Exception e e)	)))
 	
 (defn getValue [key map]
 	(let [ jsonVal (get-in map [key :value]) ]
