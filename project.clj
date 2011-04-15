@@ -17,5 +17,4 @@
 				 [xerces/xercesImpl "2.7.1"]
 				 [incanter "1.2.3"]
 				]
-  :main seabass.impl
   )
