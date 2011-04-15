@@ -1,0 +1,51 @@
+# seabass
+
+This is a small library to make it easier to work with RDF and SPARQL when using Incanter.
+
+There are four functions defined in this library:
+
+### build [ & targets ]
+	Takes n-many arguments and returns an RDF model.  These arguments can be
+		- Strings for relative or absolute pathnames for RDF files
+		- Strings for URI's that resolve to an RDF file online (this is a little futzy atm)
+		- Strings for Jena Rules files (must end with ".rules" in the filename...for now)
+		- RDF models previously created with the build function
+		- I suppose you could use a Jena model, since that's the underlying implementation
+		
+### bounce [ query target ]
+	This execute a SELECT query against an RDF model, returning an Incanter 
+	Dataset.  The arguments are:
+		- query: a SPARQL Select query string
+		- target: either a URI string for a Sparql Endpoint or an RDF model
+		
+### ask [ query target ]
+	This executes an ASK query against an RDF model, returning a Boolean 
+	value.  The arguments are:
+		- query: a SPARQL Ask query string
+		- target: either a URI string for a Sparql Endpoint or an RDF model
+		
+### pull [ query target ]
+	This executes a CONSTRUCT query against an RDF model, returning a 
+	new RDF model.  The arguments are:
+		- query: a SPARQL Construct query string
+		- target: either a URI string for a Sparql Endpoint or an RDF model
+
+## Usage
+
+### Build an RDF model with a local TTL file, a remote NT file, and a model pulled from an Endpoint
+	(def c "construct ?x <http://seabass.foo/bar> ?y where { ?y <http://example.org/baz> ?x }")
+	(build "data/my-ontology.ttl" "http://way.out.there/my-data.nt" (pull c "http://my-endpoint/sparql"))
+	
+### Ask whether a Sparql endpoint is up
+	(ask "ask {}" "http://my-endpoint/sparql")
+	
+### Create an Incanter Dataset based on a Select query
+	(def q "select ?x ?y ?z where { ?x <http://ex.org/foo> ?y . ?z <http://ex.org/bar ?y })
+	(bounce q (build "data/my-ont.ttl" "data/your-ont.owl"))
+
+
+## License
+
+Copyright (C) 2011 Ryan Kohl
+
+Distributed under the Eclipse Public License, the same as Clojure.
