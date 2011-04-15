@@ -1,0 +1,3 @@
+@prefix sb: <http://seabass.foo/>
+
+[rule1:  (?p sb:caught ?x), (?p sb:caught ?y), notEqual(?x ?y) -> (?x sb:neighbor ?y) ]

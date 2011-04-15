@@ -1,0 +1,17 @@
+@prefix xsd: 	<http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: 	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sb:	<http://seabass.foo/> .
+
+sb:Person 	a rdfs:Class .
+				
+sb:Fish 		a rdfs:Class .
+			
+sb:caught 		a rdf:Property ;
+					rdfs:domain sb:Person ;
+					rdfs:range sb:Fish .
+					
+sb:weight		a rdf:Property ;
+					rdfs:domain sb:Fish ;
+					rdfs:range xsd:integer .
+					

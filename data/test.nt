@@ -1,0 +1,15 @@
+<http://seabass.foo/walter> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Fish> .
+<http://seabass.foo/walter> <http://seabass.foo/weight> "10"^^<http://www.w3.org/2001/XMLSchema#integer> .
+					
+<http://seabass.foo/oscar>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Fish> .
+<http://seabass.foo/oscar> <http://seabass.foo/weight> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+					
+<http://seabass.foo/carl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Fish> .
+<http://seabass.foo/carl> <http://seabass.foo/weight> "20"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+<http://seabass.foo/watson> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Person> .
+<http://seabass.foo/watson> <http://seabass.foo/caught> <http://seabass.foo/walter> .
+<http://seabass.foo/watson> <http://seabass.foo/caught> <http://seabass.foo/oscar> .
+					
+<http://seabass.foo/olivia> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Person> .
+<http://seabass.foo/olivia> <http://seabass.foo/caught> <http://seabass.foo/carl> .
