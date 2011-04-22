@@ -31,7 +31,7 @@
 				(.read model (java.io.FileInputStream. url-filename) "" lang) )))))
 				
 (defn build-impl  
-	( [urls]
+	[urls]
 		(let [		m				"class com.hp.hpl.jena.rdf.model.impl.ModelCom"
 					i				"class com.hp.hpl.jena.rdf.model.impl.InfModelImpl"
 					core			(ModelFactory/createDefaultModel)
@@ -42,11 +42,8 @@
 												(model? x)		(.add core x)
 												(rules? x)		(.setRules reasoner (Rule/rulesFromURL x))
 												(string? x)		(.add core (get-model x))	))
-					(ModelFactory/createInfModel reasoner core)	
+					(ModelFactory/createInfModel reasoner core)
 					(catch Exception e e)	)))
-	( [url lang]
-		(try (.read (ModelFactory/createDefaultModel) url lang)
-			(catch Exception e e)	)))
 	
 (defn getValue [key map]
 	(let [ jsonVal (get-in map [key :value]) ]
