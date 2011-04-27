@@ -5,6 +5,7 @@
 	(:import [com.hp.hpl.jena.vocabulary ReasonerVocabulary])
 	(:import [com.hp.hpl.jena.util FileUtils])
 	(:import [com.hp.hpl.jena.sparql.engine.http QueryExceptionHTTP])
+	(:import [javax.xml.bind DatatypeConverter])
 	(:require 	[clojure.contrib [string :as str] [json :as json] ]
 					[incanter.core :as incanter]	))	
 
@@ -43,14 +44,23 @@
 												(rules? x)		(.setRules reasoner (Rule/rulesFromURL x))
 												(string? x)		(.add core (get-model x))	))
 					(ModelFactory/createInfModel reasoner core)
-					(catch Exception e e)	)))
+					(catch Exception e (prn e))	)))
 	
 (defn getValue [key map]
-	(let [ jsonVal (get-in map [key :value]) ]
+	(try 
+	  (let [ jsonVal (get-in map [key :value]) ]
 		(condp = (get-in map [key :datatype])
-			"http://www.w3.org/2001/XMLSchema#integer" (Integer/parseInt jsonVal)
-			"http://www.w3.org/2001/XMLSchema#string" jsonVal
-			jsonVal		)))
+			"http://www.w3.org/2001/XMLSchema#boolean"	(str (DatatypeConverter/parseBoolean jsonVal))
+			"http://www.w3.org/2001/XMLSchema#date"		(.getTimeInMillis (DatatypeConverter/parseDate jsonVal))
+			"http://www.w3.org/2001/XMLSchema#dateTime"	(.getTimeInMillis (DatatypeConverter/parseDateTime jsonVal))
+			"http://www.w3.org/2001/XMLSchema#decimal" 	(.doubleValue (DatatypeConverter/parseDecimal jsonVal))
+			"http://www.w3.org/2001/XMLSchema#double"		(Double/parseDouble jsonVal)
+			"http://www.w3.org/2001/XMLSchema#float"			(DatatypeConverter/parseFloat jsonVal)
+			"http://www.w3.org/2001/XMLSchema#integer" 	(DatatypeConverter/parseInt jsonVal)
+			"http://www.w3.org/2001/XMLSchema#string" 		(DatatypeConverter/parseString jsonVal)
+			"http://www.w3.org/2001/XMLSchema#time"		(.getTimeInMillis (DatatypeConverter/parseTime jsonVal))
+			jsonVal		))
+	(catch IllegalArgumentException e (prn e))	))
 	
 (defn shallow
 	"take the default decoding of a json'd result set 
@@ -74,17 +84,17 @@
 						(makeDataset (format-result-set (.execSelect (QueryExecutionFactory/sparqlService target query))))
 					(model? target)	
 						(makeDataset (format-result-set (.execSelect (QueryExecutionFactory/create (QueryFactory/create query) target))))	)
-		(catch QueryExceptionHTTP e nil)	))
+		(catch QueryExceptionHTTP e (prn e))	))
 
 (defn execute-ask 
 	[query target]
 	(try
 		(cond	(string? target) 		(.execAsk (QueryExecutionFactory/sparqlService target query))		
 					(model? target)		(.execAsk (QueryExecutionFactory/create (QueryFactory/create query) target)) )
-		(catch QueryExceptionHTTP e nil)	))
+		(catch QueryExceptionHTTP e (prn e))	))
 		
 (defn execute-construct [query target]
 	(try 
 		(cond	(string? target)		(.execConstruct (QueryExecutionFactory/sparqlService target query))
 					(model? target)		(.execConstruct (QueryExecutionFactory/create (QueryFactory/create query) target)) )
-		(catch QueryExceptionHTTP e nil)	))
+		(catch QueryExceptionHTTP e (prn e))	))

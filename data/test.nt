@@ -13,3 +13,23 @@
 					
 <http://seabass.foo/olivia> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://seabass.foo/Person> .
 <http://seabass.foo/olivia> <http://seabass.foo/caught> <http://seabass.foo/carl> .
+
+<http://seabass.foo/seb> <http://seabass.foo/booleans> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://seabass.foo/seb> <http://seabass.foo/dates> "1459-11-15+06:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://seabass.foo/seb> <http://seabass.foo/datetimes> "1459-11-15T04:10:36+06:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://seabass.foo/seb> <http://seabass.foo/decimals> "22.222"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://seabass.foo/seb> <http://seabass.foo/doubles> "99.999"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://seabass.foo/seb> <http://seabass.foo/floats> "11.111"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://seabass.foo/seb> <http://seabass.foo/integers> "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://seabass.foo/seb> <http://seabass.foo/strings> "test"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://seabass.foo/seb> <http://seabass.foo/times> "04:10:36+06:00"^^<http://www.w3.org/2001/XMLSchema#time> .
+
+<http://seabass.foo/viv> <http://seabass.foo/booleans> "0"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://seabass.foo/viv> <http://seabass.foo/dates> "1977-08-05-05:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://seabass.foo/viv> <http://seabass.foo/datetimes> "1977-08-05T13:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://seabass.foo/viv> <http://seabass.foo/decimals> "-22.222"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://seabass.foo/viv> <http://seabass.foo/doubles> "-99.999"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://seabass.foo/viv> <http://seabass.foo/floats> "-11.111"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://seabass.foo/viv> <http://seabass.foo/integers> "-12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://seabass.foo/viv> <http://seabass.foo/strings> "test"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://seabass.foo/viv> <http://seabass.foo/times> "13:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#time> .

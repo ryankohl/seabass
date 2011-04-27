@@ -11,12 +11,12 @@
 			a2 "prefix sb: <http://seabass.foo/> ask {sb:carl sb:caught sb:olivia}"
 			c1 "prefix sb: <http://seabass.foo/> construct { ?x sb:neighbor ?y } { ?p sb:caught ?x . ?p sb:caught ?y . filter( ?x != ?y )} "
 			]
-		(is (= 6 (incanter/nrow (bounce s1 m))))
+		(is (= 15 (incanter/nrow (bounce s1 m))))
 		(is (ask a1 m))
 		(is (not (ask a2 m)))
 		(is (= 0 (incanter/nrow(bounce s2 m))))
 		(is (= 2 (incanter/nrow (bounce s2 (pull c1 m)))))
-		(is (= 7 (incanter/nrow (bounce s1 (build m (pull c1 m))))))	))
+		(is (= 16 (incanter/nrow (bounce s1 (build m (pull c1 m))))))	))
 		
 (deftest remote-test
 	(let [	s1 "select ?x where { ?x a <http://seabass.foo/Fish>  } limit 10"
@@ -35,5 +35,42 @@
 	(let [ m  (build "data/test.ttl" "data/test.nt") 
 			s1 "prefix sb: <http://seabass.foo/> select ?x ?y where { ?x sb:neighbor ?y }"
 			r	"data/test.rules" ]
-			(is (= 0 (incanter/nrow (bounce s1 m))))
-			(is (= 2 (incanter/nrow (bounce s1 (build m r)))))	))
+		(is (= 0 (incanter/nrow (bounce s1 m))))
+		(is (= 2 (incanter/nrow (bounce s1 (build m r)))))	))
+			
+(deftest datatype-test
+	(let [ m (build "data/test.nt")
+			s1 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:booleans ?y } order by ?y" 
+			s2 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:dates ?y } order by ?y" 
+			s3 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:datetimes ?y } order by ?y" 
+			s4 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:decimals ?y } order by ?y" 
+			s5 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:doubles ?y } order by ?y" 
+			s6 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:floats ?y } order by ?y" 
+			s7 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:integers ?y } order by ?y" 
+			s8 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:strings ?y } order by ?y" 
+			s9 "prefix sb: <http://seabass.foo/> select ?y where { ?x sb:times ?y } order by ?y" ]
+		(is (= "false" 				(incanter/sel (bounce s1 m) :cols :y :rows 0)))	
+		(is (= "true" 				(incanter/sel (bounce s1 m) :cols :y :rows 1)))
+		(is (= -16098156000000 	(incanter/sel (bounce s2 m) :cols :y :rows 0)))	
+		(is (= 239605200000 		(incanter/sel (bounce s2 m) :cols :y :rows 1)))
+		(is (= -16098140964000 		(incanter/sel (bounce s3 m) :cols :y :rows 0)))	
+		(is (= 239653200000 			(incanter/sel (bounce s3 m) :cols :y :rows 1)))
+		(is (= -22.222 				(incanter/sel (bounce s4 m) :cols :y :rows 0)))	
+		(is (= 22.222			 		(incanter/sel (bounce s4 m) :cols :y :rows 1)))
+		(is (= -99.999 			(incanter/sel (bounce s5 m) :cols :y :rows 0)))	
+		(is (= 99.999				(incanter/sel (bounce s5 m) :cols :y :rows 1)))
+		(is (= -11 						(.intValue (incanter/sel (bounce s6 m) :cols :y :rows 0))))
+		(is (= 11			 			(.intValue (incanter/sel (bounce s6 m) :cols :y :rows 1))))
+		(is (= -12 					(incanter/sel (bounce s7 m) :cols :y :rows 0)))	
+		(is (= 12 					(incanter/sel (bounce s7 m) :cols :y :rows 1)))
+		(is (= "test"				 	(incanter/sel (bounce s8 m) :cols :y :rows 0)))	
+		(is (= "test"			 		(incanter/sel (bounce s8 m) :cols :y :rows 1)))
+		(is (= -6564000			(incanter/sel (bounce s9 m) :cols :y :rows 0)))	
+		(is (= 66000000 		(incanter/sel (bounce s9 m) :cols :y :rows 1))) ))
+		
+		
+		
+		
+		
+		
+		
