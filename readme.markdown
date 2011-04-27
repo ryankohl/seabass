@@ -6,7 +6,7 @@ This is a small library to make it easier to work with RDF and SPARQL when using
 There are four functions defined in this library:
 
 ### build [ & targets ]
-	Takes n-many arguments and returns an RDF model.  These arguments can be
+Takes n-many arguments and returns an RDF model.  These arguments can be
 	
 -   Strings for relative or absolute pathnames for RDF files
 -   Strings for URI's that resolve to an RDF file online
@@ -22,8 +22,8 @@ There are four functions defined in this library:
 -   I suppose you could use a Jena model, since that's the underlying implementation
 		
 ### bounce [ query target ]
-	This execute a SELECT query against an RDF model, returning an Incanter 
-	Dataset.  The arguments are:
+This execute a SELECT query against an RDF model, returning an Incanter 
+Dataset.  The arguments are:
 	
 -   query: a SPARQL Select query string
 -   target: either a URI string for a Sparql Endpoint or an RDF model
@@ -61,8 +61,8 @@ new RDF model.  The arguments are:
 		(def q "	select ?x ?y ?z 
 					where { ?x <http://ex.org/foo> ?y . 
 								?z <http://ex.org/bar ?y })
-		(bounce q (build "data/my-ont.ttl" 
-								"data/your-ont.owl"))
+		(bounce q (build 	"data/my-ont.ttl" 
+									"data/your-ont.owl"))
 
 
 ## License
