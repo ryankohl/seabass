@@ -48,7 +48,7 @@ new RDF model.  The arguments are:
 
 		(def c "	construct ?x <http://seabass.foo/bar> ?y 
 					where { ?y <http://example.org/baz> ?x }")
-		(build [	"data/my-ontology.rdf" "TTL"] 
+		(build    ["data/my-ontology.rdf" "TTL"] 
 					"http://way.out.there/my-data.nt" 
 					(pull c "http://my-endpoint/sparql"))
 	
@@ -59,7 +59,7 @@ new RDF model.  The arguments are:
 -   Create an Incanter Dataset based on a Select query
 
 		(def q "	select ?x ?y ?z 
-					where { ?x <http://ex.org/foo> ?y . 
+					where {	?x <http://ex.org/foo> ?y . 
 								?z <http://ex.org/bar ?y })
 		(bounce q (build "data/my-ont.ttl" "data/your-ont.owl"))
 
