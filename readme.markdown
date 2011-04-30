@@ -81,6 +81,15 @@ Usage
 (bounce q (build "data/my-ont.ttl" "data/your-ont.owl"))
 ```
 
+Built-ins
+----
+All built-ins supported in Jena 2.6.4 (the current release as of April, 2011) can be used.  The following built-ins have been added for Jena Rules (i.e. in .rules files, and not in Sparql queries):
+
+-  diff-second: Returns the difference between two times, dates, or datetimes in seconds.
+-  diff-minute: Returns the difference between two times, dates, or datetimes in minutes.
+-  diff-hour: Returns the difference between two times, dates, or datetimes in hours.
+-  diff-day: Returns the difference between two times, dates, or datetimes in days (1 day = 24 hours).
+
 License
 ----
 
