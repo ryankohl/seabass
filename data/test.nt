@@ -33,3 +33,11 @@
 <http://seabass.foo/viv> <http://seabass.foo/integers> "-12"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://seabass.foo/viv> <http://seabass.foo/strings> "test"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://seabass.foo/viv> <http://seabass.foo/times> "13:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#time> .
+
+
+<http://seabass.foo/seb> <http://seabass.foo/date-diff> "1977-12-05-05:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://seabass.foo/viv> <http://seabass.foo/date-diff> "1977-12-07-05:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<http://seabass.foo/seb> <http://seabass.foo/datetime-diff> "1977-08-05T14:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://seabass.foo/viv> <http://seabass.foo/datetime-diff> "1977-08-05T13:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://seabass.foo/seb> <http://seabass.foo/time-diff> "13:20:05-05:00"^^<http://www.w3.org/2001/XMLSchema#time> .
+<http://seabass.foo/viv> <http://seabass.foo/time-diff> "13:20:00-05:00"^^<http://www.w3.org/2001/XMLSchema#time> .

@@ -11,12 +11,12 @@
 			a2 "prefix sb: <http://seabass.foo/> ask {sb:carl sb:caught sb:olivia}"
 			c1 "prefix sb: <http://seabass.foo/> construct { ?x sb:neighbor ?y } { ?p sb:caught ?x . ?p sb:caught ?y . filter( ?x != ?y )} "
 			]
-		(is (= 15 (incanter/nrow (bounce s1 m))))
+		(is (= 18 (incanter/nrow (bounce s1 m))))
 		(is (ask a1 m))
 		(is (not (ask a2 m)))
 		(is (= 0 (incanter/nrow(bounce s2 m))))
 		(is (= 2 (incanter/nrow (bounce s2 (pull c1 m)))))
-		(is (= 16 (incanter/nrow (bounce s1 (build m (pull c1 m))))))	))
+		(is (= 19 (incanter/nrow (bounce s1 (build m (pull c1 m))))))	))
 		
 (deftest remote-test
 	(let [	s1 "select ?x where { ?x a <http://seabass.foo/Fish>  } limit 10"
@@ -68,9 +68,20 @@
 		(is (= -6564000			(incanter/sel (bounce s9 m) :cols :y :rows 0)))	
 		(is (= 66000000 		(incanter/sel (bounce s9 m) :cols :y :rows 1))) ))
 		
-		
-		
-		
+(deftest builtin-test
+		(let [ m (build "data/test.nt" "data/test.rules")
+			s1 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-date ?y }"
+			s2 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-datetime ?y }"
+			s3 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-time ?y }" 
+			s4 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-date-fail ?y }"
+			s5 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-datetime-fail ?y }"
+			s6 "prefix sb: <http://seabass.foo/>  select ?x ?y where { ?x sb:closeTo-time-fail ?y }" ]
+			(is (= 2 (incanter/nrow (bounce s1 m))))
+			(is (= 2 (incanter/nrow (bounce s2 m))))
+			(is (= 2 (incanter/nrow (bounce s3 m))))	
+			(is (= 0 (incanter/nrow (bounce s4 m))))
+			(is (= 0 (incanter/nrow (bounce s5 m))))
+			(is (= 0 (incanter/nrow (bounce s6 m))))	))
 		
 		
 		

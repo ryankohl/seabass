@@ -1,3 +1,9 @@
 @prefix sb: <http://seabass.foo/>
 
 [rule1:  (?p sb:caught ?x), (?p sb:caught ?y), notEqual(?x ?y) -> (?x sb:neighbor ?y) ]
+[rule2:  (?x sb:closeTo-date ?y) <- (?x sb:date-diff ?a), (?y sb:date-diff ?b), notEqual(?x, ?y), diff-hour(?a, ?b, ?c), lessThan(?c, 49) ]
+[rule2:  (?x sb:closeTo-date-fail ?y) <- (?x sb:date-diff ?a), (?y sb:date-diff ?b), notEqual(?x, ?y), diff-hour(?a, ?b, ?c), lessThan(?c, 48) ]
+[rule3:  (?x sb:closeTo-datetime ?y) <- (?x sb:datetime-diff ?a), (?y sb:datetime-diff ?b), notEqual(?x, ?y), diff-minute(?a, ?b, ?c), lessThan(?c, 61) ]
+[rule3:  (?x sb:closeTo-datetime-fail ?y) <- (?x sb:datetime-diff ?a), (?y sb:datetime-diff ?b), notEqual(?x, ?y), diff-minute(?a, ?b, ?c), lessThan(?c, 60) ]
+[rule3:  (?x sb:closeTo-time ?y) <- (?x sb:time-diff ?a), (?y sb:time-diff ?b), notEqual(?x, ?y), diff-second(?a, ?b, ?c), lessThan(?c, 6) ]
+[rule3:  (?x sb:closeTo-time-fail ?y) <- (?x sb:time-diff ?a), (?y sb:time-diff ?b), notEqual(?x, ?y), diff-second(?a, ?b, ?c), lessThan(?c, 5) ]

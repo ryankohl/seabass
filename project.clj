@@ -1,4 +1,4 @@
-(defproject seabass "0.2"
+(defproject seabass "0.3"
   :description "A library for working with RDF in the Incanter environment."
   :dev-dependencies [[lein-clojars "0.6.0"]]
   :dependencies [[org.clojure/clojure "1.2.0"]

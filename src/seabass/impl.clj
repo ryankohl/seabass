@@ -6,9 +6,14 @@
 	(:import [com.hp.hpl.jena.util FileUtils])
 	(:import [com.hp.hpl.jena.sparql.engine.http QueryExceptionHTTP])
 	(:import [javax.xml.bind DatatypeConverter])
-	(:require 	[clojure.contrib [string :as str] [json :as json] ]
-					[incanter.core :as incanter]	))	
-
+	(:import [com.hp.hpl.jena.reasoner.rulesys.builtins BaseBuiltin])
+	(:import [com.hp.hpl.jena.reasoner.rulesys BuiltinRegistry Util])
+	(:import [com.hp.hpl.jena.datatypes.xsd XSDDatatype XSDDateTime])
+	(:import [com.hp.hpl.jena.graph Node])
+	(:require 	[clojure.contrib [math :as math] [string :as str] [json :as json] ]
+					[incanter.core :as incanter]
+					[seabass.builtin :as builtin]))	
+					
 (defn rules?	[x]	(= (str/trim (str/tail 6 x)) ".rules"))
 (defn file?	[x]	(FileUtils/isFile x))
 (defn uri?	[x]	(FileUtils/isURI x))
@@ -31,6 +36,12 @@
 		(catch java.net.MalformedURLException e
 				(.read model (java.io.FileInputStream. url-filename) "" lang) )))))
 				
+(defn registerBuiltins []
+	(.register BuiltinRegistry/theRegistry builtin/diff-second)
+	(.register BuiltinRegistry/theRegistry builtin/diff-minute)
+	(.register BuiltinRegistry/theRegistry builtin/diff-hour)
+	(.register BuiltinRegistry/theRegistry builtin/diff-day)	)
+				
 (defn build-impl  
 	[urls]
 		(let [		m				"class com.hp.hpl.jena.rdf.model.impl.ModelCom"
@@ -38,7 +49,8 @@
 					core			(ModelFactory/createDefaultModel)
 					config 		(.addProperty (.createResource core) ReasonerVocabulary/PROPruleMode "hybrid")
 					reasoner	(.create (GenericRuleReasonerFactory/theInstance) config) ]
-			(try	(doseq [x urls]	(cond
+			(try	(registerBuiltins)
+					(doseq [x urls]	(cond
 												(vector? x)		(.add core (get-model (nth x 0) (nth x 1)))
 												(model? x)		(.add core x)
 												(rules? x)		(.setRules reasoner (Rule/rulesFromURL x))
