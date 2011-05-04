@@ -8,7 +8,6 @@
 	(:import [javax.xml.bind DatatypeConverter])
 	(:import [com.hp.hpl.jena.reasoner.rulesys.builtins BaseBuiltin])
 	(:import [com.hp.hpl.jena.reasoner.rulesys BuiltinRegistry Util])
-	(:import [com.hp.hpl.jena.datatypes.xsd XSDDatatype XSDDateTime])
 	(:import [com.hp.hpl.jena.graph Node])
 	(:require 	[clojure.contrib [math :as math] [string :as str] [json :as json] ]
 					[incanter.core :as incanter]
