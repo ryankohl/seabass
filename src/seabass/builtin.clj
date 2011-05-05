@@ -15,8 +15,8 @@
 					t2 	(nth args 1)
 					t3		(nth args 2) ]
 			(if (and (Util/isInstant t1) (Util/isInstant t2))
-				(let [	c1 (/ (.getTimeInMillis (.asCalendar (.getLiteralValue t1))) n)
-						c2 (/ (.getTimeInMillis (.asCalendar (.getLiteralValue t2))) n) ]
+				(let [	c1 (double (/ (.getTimeInMillis (.asCalendar (.getLiteralValue t1))) n))
+						c2 (double (/ (.getTimeInMillis (.asCalendar (.getLiteralValue t2))) n)) ]
 					(.bind env t3 (Node/createLiteral (str (math/abs (- c2 c1))) "" XSDDatatype/XSDdouble) ))
 				nil	)))))
 				
