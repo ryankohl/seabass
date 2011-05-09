@@ -28,3 +28,10 @@
 	interrogated.  If the target is a model, then the
 	model is interrogated."
 	(execute-construct query target)	)
+	
+(defn save [model target]
+	"Writes the contents of a model to the file specified
+	by the target string.  The resulting file is encoded in
+	n-triples.  Only RDF facts are written (i.e. not rules).
+	Returns the path name of the written file."
+	(save-model-impl model target))

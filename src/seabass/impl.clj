@@ -23,6 +23,13 @@
 			klass (str (class x))	]
 		(or (= klass m) (= klass i))	))
 		
+(defn save-model-impl [model target]
+	(with-open [ stream 	(java.io.FileOutputStream. target)]
+		(let [	m (.add (ModelFactory/createDefaultModel) model)
+				p 	(.getProperty model "http://jena.hpl.hp.com/2003/RuleReasoner#" "ruleMode" )	 ]
+		(.write (.removeAll m nil p nil) stream "N-TRIPLE")
+		target )))
+		
 (defn get-model  
 	( []
 		(ModelFactory/createDefaultModel)	)

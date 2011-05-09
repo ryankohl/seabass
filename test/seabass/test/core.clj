@@ -1,4 +1,5 @@
 (ns seabass.test.core
+	(:import [com.hp.hpl.jena.rdf.model Model])
 	(:use [seabass.core] :reload)
 	(:use [clojure.test])
 	(:require 	[incanter.core :as incanter]	))
@@ -85,3 +86,9 @@
 		(is (= 0 (incanter/nrow (bounce s6 m))))
 		(is (= 2 (incanter/nrow (bounce s7 m))))	))
 		
+(deftest save-test
+	(let [	m	(build "data/test.nt")
+			n  (build (save m "data/save-test.nt"))	
+			o	(build (save n "data/save-test-2.nt")) ]
+		(is (.isIsomorphicWith m n))	
+		(is (.isIsomorphicWith n o)) ))

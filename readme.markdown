@@ -5,7 +5,7 @@ This is a small library to make it easier to work with RDF and SPARQL when using
 
 API
 ----
-There are four functions defined in this library:
+There are five functions defined in this library:
 
 build [ & targets ]
 ====
@@ -28,7 +28,7 @@ Takes n-many arguments and returns an RDF model.  These arguments can be
 bounce [ query target ]
 ====
 
-This execute a SELECT query against an RDF model, returning an Incanter 
+This executes a SELECT query against an RDF model, returning an Incanter 
 Dataset.  The arguments are:
 	
 -   query: a SPARQL Select query string
@@ -51,6 +51,14 @@ new RDF model.  The arguments are:
 
 - 	query: a SPARQL Construct query string
 - 	target: either a URI string for a Sparql Endpoint or an RDF model
+
+save [ model target ]
+Writes the contents of a model to the file specified by the target string.  
+The resulting file is encoded in n-triples.  Only RDF facts are written 
+(i.e. not rules).  Returns the path name of the written file.
+
+- model: an RDF model previously constructed (via build or pull)
+- target: a string for a relative or absolute pathnames for the file to write to
 
 Usage
 ----
