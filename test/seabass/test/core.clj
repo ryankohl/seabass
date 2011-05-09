@@ -86,9 +86,9 @@
 		(is (= 0 (incanter/nrow (bounce s6 m))))
 		(is (= 2 (incanter/nrow (bounce s7 m))))	))
 		
-(deftest save-test
+(deftest stash-test
 	(let [	m	(build "data/test.nt")
-			n  (build (save m "data/save-test.nt"))	
-			o	(build (save n "data/save-test-2.nt")) ]
+			n  (build (stash m "data/stash-test.nt"))	
+			o	(build (stash n "data/stash-test-2.nt")) ]
 		(is (.isIsomorphicWith m n))	
 		(is (.isIsomorphicWith n o)) ))
