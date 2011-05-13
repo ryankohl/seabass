@@ -19,6 +19,11 @@
 		(is (= 2 (incanter/nrow (bounce s2 (pull c1 m)))))
 		(is (= 19 (incanter/nrow (bounce s1 (build m (pull c1 m))))))	))
 		
+(deftest add-test
+	(let [ m 	(build "data/test.ttl" (build "data/test.nt"))
+			 n 	(pile (build "data/test.ttl") (build "data/test.nt")) ]
+			(is (.isIsomorphicWith m n))	))
+		
 (deftest remote-test
 	(let [	s1 "select ?x where { ?x a <http://seabass.foo/Fish>  } limit 10"
 			s2 "select ?p where { ?s ?p ?o }"

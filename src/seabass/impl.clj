@@ -23,6 +23,9 @@
 			klass (str (class x))	]
 		(or (= klass m) (= klass i))	))
 		
+(defn add-model-impl [model addition]
+	(.add model addition))
+		
 (defn save-model-impl [model target]
 	(with-open [ stream 	(java.io.FileOutputStream. target)]
 		(let [	m (.add (ModelFactory/createDefaultModel) model)

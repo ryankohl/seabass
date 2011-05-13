@@ -35,3 +35,9 @@
 	n-triples.  Only RDF facts are written (i.e. not rules).
 	Returns the path name of the written file."
 	(save-model-impl model target))
+	
+(defn pile [model addition]
+	"Adds the triples from the addition to the model.  This 
+	is similar to (build model addition), but pile has no 
+	return value - all the work is in side-effects."
+	(add-model-impl model addition))
