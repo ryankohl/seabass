@@ -5,7 +5,6 @@ This is a small library to make it easier to work with RDF and SPARQL when using
 
 API
 ----
-There are five functions defined in this library:
 
 build [ & targets ]
 ====
