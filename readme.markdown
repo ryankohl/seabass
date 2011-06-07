@@ -61,15 +61,6 @@ The resulting file is encoded in n-triples.  Only RDF facts are written
 - model: an RDF model previously constructed (via build or pull)
 - target: a string for a relative or absolute pathname for the file to write to
 
-add [ model addition ]
-====
-
-Adds the triples from the addition to the model.  This is similar to 
-(build model addition), but pile has no return value - all the work
-is in side-effects.  The arguments are:
-
-- model: an RDF model to be added to
-- addition: an RDF model whose triples will be read from
 
 Usage
 ----
