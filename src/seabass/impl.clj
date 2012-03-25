@@ -10,13 +10,14 @@
   (:import [com.hp.hpl.jena.reasoner.rulesys.builtins BaseBuiltin])
   (:import [com.hp.hpl.jena.reasoner.rulesys BuiltinRegistry Util])
   (:import [com.hp.hpl.jena.graph Node])
+  (:use [clojure.java.io])
   (:require [clojure.contrib [math :as math] [string :as str] [json :as json] ]
 	    [incanter.core :as incanter]
-	    [seabass.builtin :as builtin]))	
+	    [seabass.builtin :as builtin]))
 					
 (defn rules? [x]  (= (str/trim (str/tail 6 x)) ".rules"))
-(defn file?  [x]  (FileUtils/isFile x))
 (defn uri?   [x]  (FileUtils/isURI x))
+(defn file? [x] (= (.getClass x) java.io.File))
 
 (defn model? [x]
   (let [m "class com.hp.hpl.jena.rdf.model.impl.ModelCom" 
@@ -43,7 +44,12 @@
 	       (.read model url-filename lang))
 	     (catch java.net.MalformedURLException e
 	       (.read model (java.io.FileInputStream. url-filename) "" lang))))))
- 			
+
+(defn add-file [model f]
+  (let [filename (.getName f)
+        lang (FileUtils/guessLang filename)]
+    (.read model (java.io.FileInputStream. f) "" lang)))
+
 (defn registerBuiltins []
   (.register BuiltinRegistry/theRegistry builtin/diff-second)
   (.register BuiltinRegistry/theRegistry builtin/diff-minute)
@@ -61,6 +67,7 @@
     (try (registerBuiltins)
 	 (doseq [x urls]
 	   (cond
+            (file? x) (add-file core x)
 	    (vector? x) (.add core (get-model (nth x 0) (nth x 1)))
 	    (model? x) (.add core x)
 	    (rules? x) (.setRules reasoner (Rule/rulesFromURL x))

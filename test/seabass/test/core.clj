@@ -2,7 +2,8 @@
   (:import [com.hp.hpl.jena.rdf.model Model])
   (:use [seabass.core] :reload)
   (:use [clojure.test])
-  (:require 	[incanter.core :as incanter]	))
+  (:use [clojure.java.io])
+  (:require [incanter.core :as incanter] ))
 
 (defn sb [q](str "prefix sb: <http://seabass.foo/> " q))
 
@@ -12,15 +13,29 @@
 	s2 (sb "select ?x ?y where { ?x sb:neighbor ?y }")
 	a1 (sb "ask {sb:olivia sb:caught sb:carl}")
 	a2 (sb "ask {sb:carl sb:caught sb:olivia}")
-	c1 (sb "construct { ?x sb:neighbor ?y }
-{ ?p sb:caught ?x . ?p sb:caught ?y . filter( ?x != ?y )}")]
+	c1 (sb "construct { ?x sb:neighbor ?y } { ?p sb:caught ?x . ?p sb:caught ?y . filter( ?x != ?y )}")]
     (is (= 18 (incanter/nrow (bounce s1 m))))
     (is (ask a1 m))
     (is (not (ask a2 m)))
     (is (= 0 (incanter/nrow(bounce s2 m))))
     (is (= 2 (incanter/nrow (bounce s2 (pull c1 m)))))
     (is (= 19 (incanter/nrow (bounce s1 (build m (pull c1 m))))))))
-	       	
+
+(deftest file-test
+  (let [m (build (file "./data/test.ttl") (file "./data/test.nt"))
+	s1 "select distinct ?p where { ?s ?p ?o }"
+	s2 (sb "select ?x ?y where { ?x sb:neighbor ?y }")
+	a1 (sb "ask {sb:olivia sb:caught sb:carl}")
+	a2 (sb "ask {sb:carl sb:caught sb:olivia}")
+	c1 (sb "construct { ?x sb:neighbor ?y } { ?p sb:caught ?x . ?p sb:caught ?y . filter( ?x != ?y )}")]
+    (is (= 18 (incanter/nrow (bounce s1 m))))
+    (is (ask a1 m))
+    (is (not (ask a2 m)))
+    (is (= 0 (incanter/nrow(bounce s2 m))))
+    (is (= 2 (incanter/nrow (bounce s2 (pull c1 m)))))
+    (is (= 19 (incanter/nrow (bounce s1 (build m (pull c1 m))))))))
+
+
 (deftest remote-test
   (let [s1 "select ?x where { ?x a <http://seabass.foo/Fish>  } limit 10"
 	s2 "select ?p where { ?s ?p ?o }"

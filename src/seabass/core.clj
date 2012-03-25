@@ -4,7 +4,7 @@
 (defn build  [& targets]
   "Creates a model from the arguments provided.
   These arguments can include local uri and remote
-  uri strings as well as models returned from a 
+  uri strings as well as rdf files and models returned from a 
   (pull query target) call."
 (build-impl targets))
 
