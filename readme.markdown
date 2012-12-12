@@ -1,7 +1,15 @@
 seabass
 ----
 
-This is a small library to make it easier to work with RDF and SPARQL when using Incanter.
+This is a small library to make it easier to work with RDF and SPARQL in Clojure 1.4.  
+
+Default Prefixes
+----
+
+- xsd  (http://www.w3.org/2001/XMLSchema#)
+- rdf  (http://www.w3.org/1999/02/22-rdf-syntax-ns#)
+- rdfs (http://www.w3.org/2000/01/rdf-schema#)
+- owl  (http://www.w3.org/2002/07/owl#)
 
 API
 ----
@@ -20,15 +28,19 @@ Takes n-many arguments and returns an RDF model.  These arguments can be
 	-   "N-TRIPLES"
 	-   "TTL"
 	-   "N3"
--   Strings for Jena Rules files (must end with ".rules" in the filename...for now)
+-   Strings for Jena Rules files (must end with ".rules" in the filename)
 -   RDF models previously created with the build function
--   I suppose you could use a Jena model, since that's the underlying implementation
+-   A Jena model
 		
 bounce [ query target ]
 ====
 
-This executes a SELECT query against an RDF model, returning an Incanter 
-Dataset.  The arguments are:
+This executes a SELECT query against an RDF model, returning a map with 
+the following keys:
+- :vars - the list of variables used in the select query's 'projection' clause
+- :data - a list of maps whose keys are the variables listed in :vars
+
+The arguments are:
 	
 -   query: a SPARQL Select query string
 -   target: either a URI string for a Sparql Endpoint or an RDF model
@@ -56,7 +68,8 @@ stash [ model target ]
 
 Writes the contents of a model to the file specified by the target string.  
 The resulting file is encoded in n-triples.  Only RDF facts are written 
-(i.e. not rules).  Returns the path name of the written file.
+(i.e. not rules).  Returns the path name of the written file (ie the 
+provided 'target' parameter).
 
 - model: an RDF model previously constructed (via build or pull)
 - target: a string for a relative or absolute pathname for the file to write to
@@ -68,11 +81,11 @@ Usage
 -   Build an RDF model with a local TTL file, a remote NT file, and a model pulled from an Endpoint
 
 ```clj
-(def c "	construct ?x <http://seabass.foo/bar> ?y 
-			where { ?y <http://example.org/baz> ?x }")
-(build    ["data/my-ontology.rdf" "TTL"] 
-			"http://way.out.there/my-data.nt" 
-			(pull c "http://my-endpoint/sparql"))
+(def c "construct {?x <http://seabass.foo/bar> ?y}
+	{ ?y <http://example.org/baz> ?x }")
+(build ["data/my-ontology.rdf" "TTL"] 
+       "http://way.out.there/my-data.nt" 
+       (pull c "http://my-endpoint/sparql"))
 ```
 	
 -   Ask whether a Sparql endpoint is up
@@ -81,19 +94,19 @@ Usage
 (ask "ask {}" "http://my-endpoint/sparql")
 ```
 	
--   Create an Incanter Dataset based on a Select query
+-   Execute a Select query
 
 ```clj
-(def q "	select ?x ?y ?z 
-			where {	
-				?x <http://ex.org/foo> ?y . 
-				?z <http://ex.org/bar ?y . }")
-(bounce q (build "data/my-ont.ttl" "data/your-ont.owl"))
+(def q "select ?x ?y ?z 
+        {?x <http://ex.org/foo> ?y . 
+         ?z <http://ex.org/bar ?y . }")
+(def m  (build "data/my-ont.ttl" "data/your-ont.owl"))
+(bounce q m)
 ```
 
 Built-ins
 ----
-All built-ins supported in Jena 2.6.4 (the current release as of April, 2011) can be used.  The following built-ins have been added for Jena Rules (i.e. in .rules files, and not in Sparql queries):
+All built-ins supported in Jena 2.9.2 (the current release as of April, 2011) can be used.  The following built-ins have been added for Jena Rules (i.e. in .rules files, and not in Sparql queries):
 
 -  diff-second: Returns the difference between two times, dates, or datetimes in seconds.
 -  diff-minute: Returns the difference between two times, dates, or datetimes in minutes.
@@ -103,6 +116,6 @@ All built-ins supported in Jena 2.6.4 (the current release as of April, 2011) ca
 License
 ----
 
-Copyright (C) 2011 Ryan Kohl
+Copyright (C) 2012 Ryan Kohl
 
 Distributed under the Eclipse Public License, the same as Clojure.
