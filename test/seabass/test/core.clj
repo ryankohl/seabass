@@ -119,3 +119,8 @@
     (is (= 2 (-> (bounce q2 m) :data count)))
     (is (= 1 (-> (bounce q3 m) :data count)))
     (is (= 0 (-> (bounce q4 m) :data count)))))
+
+(deftest optional-test
+  (let [m (build "data/test.ttl")
+        q (sb "select ?x ?y { ?x a sb:Fish . optional { ?x sb:caught ?y }}")]
+    (is (= 0 (-> (bounce q m) :data count)))))

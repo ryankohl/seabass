@@ -73,6 +73,7 @@
 
 (defn get-value [node]
   (cond
+   (nil? node) nil
    (.isLiteral node) (.getValue node)
    (.isResource node) (.toString node)))
 
