@@ -1,0 +1,8 @@
+# Emacs backups
+###############
+
+*.*~
+*.log
+.lein-failures
+target/
+data/*.nt
