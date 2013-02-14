@@ -8,6 +8,5 @@
      [org.clojure/math.numeric-tower "0.0.2"]
      [org.apache.jena/jena-arq "2.9.2"]
      ]
-  :plugins [[lein-clojars "0.9.1"]
-            [lein-swank "1.4.4"]]
+  :plugins [[lein-clojars "0.9.1"]]
   )
