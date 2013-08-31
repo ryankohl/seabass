@@ -6,7 +6,7 @@
   :dependencies [
      [org.clojure/clojure "1.4.0"]
      [org.clojure/math.numeric-tower "0.0.2"]
-     [org.apache.jena/jena-arq "2.9.2"]
+     [org.apache.jena/apache-jena-libs "2.10.1" :extension "pom"]
      [xerces/xercesImpl "2.10.0"]
      ]
   :plugins [[lein-clojars "0.9.1"]]
