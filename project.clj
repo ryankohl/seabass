@@ -1,4 +1,4 @@
-(defproject seabass "2.1"
+(defproject seabass "2.1.1"
   :description "A library for working with RDF."
   :url "https://github.com/ryankohl/seabass"
   :license {:name "Eclipse Public License"

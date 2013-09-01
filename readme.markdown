@@ -9,7 +9,7 @@ Leiningen
 Add the following line to your dependencies:
 
 ```clj
-[seabass "2.1"]
+[seabass "2.1.1"]
 ```
 
 Default Prefixes
