@@ -42,16 +42,25 @@
   provided 'target' parameter)."
   (stash-impl model target))
 
-(defn push [model target]
-  "Asserts the triples in the model to the target, which
-   can be either a model or a remote endpoint uri."
-  (push-impl model target))
-
-(defn add [fact target]
-  "Asserts a fact (ie a Jena statement) into the target, which can
+(defn push [target & facts]
+  "Asserts one or more facts (ie a Jena triples) into the target, which can
    be either a model or remote endpoint uri."
-  (add-impl fact target))
+  (push-impl target facts))
 
-(defn fact [subject predicate object]
-  "Returns a Jena statement that can be added to a model"
-  (fact-impl subject predicate object))
+(defn resource-fact [subject predicate object]
+  "Returns a Jena triple that can be added to a model, where the
+   object is a string that is a valid uri and is intended to be 
+   interpreted as a resource.  The subject and predicate strings 
+   must be valid uris, except in the case where the subject is a string
+   that starts with '_:', in which case it is interpreted as a blank node."
+  (resource-fact-impl subject predicate object))
+
+(defn literal-fact [subject predicate object]
+  "Returns a Jena triple that can be added to a model, 
+   where the object is a literal value.  Strings, integers,
+   longs, doubles, booleans, and dates (instances of java.util.Date)
+   will be converted to the appropriate XSD datatype.  Others will 
+   either turn into strings or fail. The subject and predicate strings 
+   must be valid uris, except in the case where the subject is a string
+   that starts with '_:', in which case it is interpreted as a blank node."
+  (literal-fact-impl subject predicate object))

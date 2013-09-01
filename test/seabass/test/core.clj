@@ -5,6 +5,7 @@
   (:use [clojure.java.io]))
 
 (defn sb [q](str "prefix sb: <http://seabass.foo/> " q))
+(defn sea [term] (str "http://seabass.foo/" term))
 
 (deftest local-test
   (let [m  (build "data/test.ttl" ["data/test.nt" "N-TRIPLES"]) 
@@ -124,3 +125,26 @@
   (let [m (build "data/test.ttl")
         q (sb "select ?x ?y { ?x a sb:Fish . optional { ?x sb:caught ?y }}")]
     (is (= 0 (-> (bounce q m) :data count)))))
+
+(deftest add-test
+  (let [m (build)
+        q1 (sb "select ?n {?x sb:caught sb:walter . ?x sb:name ?n }")
+        q2 (sb "select ?w {?x sb:caught sb:water . ?x sb:weight ?w }")
+        df (java.text.SimpleDateFormat. "yyyy-MM-dd")
+        r1 (resource-fact (sea "walter") (sea "caught") (sea "carl"))
+        r2 (resource-fact "_:x" (sea "caught") (sea "walter"))
+        r3 (resource-fact "_:x" (sea "knows") "_:y")
+        l1 (literal-fact (sea "walter") (sea "name") "Walter")
+        l2 (literal-fact (sea "walter") (sea "weight") 200)
+        l3 (literal-fact (sea "walter") (sea "born") (.parse df "1977-10-10"))
+        l4 (literal-fact "_:x" (sea "name") "Jimmy")
+        l5 (literal-fact "_:y" (sea "weight") 100.5)]
+    (is (= 1 (.size m)))
+    (push m r1)
+    (is (= 2 (.size m)))
+    (push m r2 r3 l1 l2 l3)
+    (apply push [m l4 l5])
+    (is (= 9 (.size m)))
+    (is (= "Jimmy" (-> (bounce q1 m) :data (nth 0) :n)))
+    (is (= 0 (-> (bounce q2 m) :data count)))))
+  

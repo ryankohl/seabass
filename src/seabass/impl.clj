@@ -1,5 +1,5 @@
 (ns seabass.impl
-  (:import [com.hp.hpl.jena.rdf.model Model ModelFactory])
+  (:import [com.hp.hpl.jena.rdf.model Model ModelFactory AnonId])
   (:import [com.hp.hpl.jena.query QueryFactory QueryExecutionFactory
 	    ResultSet ResultSetFormatter])
   (:import [com.hp.hpl.jena.reasoner.rulesys GenericRuleReasonerFactory Rule])
@@ -10,6 +10,8 @@
   (:import [com.hp.hpl.jena.reasoner.rulesys.builtins BaseBuiltin])
   (:import [com.hp.hpl.jena.reasoner.rulesys BuiltinRegistry Util])
   (:import [com.hp.hpl.jena.graph NodeFactory Triple])
+  (:import [com.hp.hpl.jena.sparql.modify.request QuadDataAcc UpdateDataInsert])
+  (:import [com.hp.hpl.jena.update UpdateAction UpdateExecutionFactory])
   (:use [clojure.java.io])
   (:require [seabass.builtin :as builtin]
             [clojure.string :as str]))
@@ -58,22 +60,24 @@
   (.register BuiltinRegistry/theRegistry builtin/diff-hour)
   (.register BuiltinRegistry/theRegistry builtin/diff-day) )
 
-(defn build-impl [urls]
-  (let [core (ModelFactory/createDefaultModel)
-	config (.addProperty (.createResource core)
-			     ReasonerVocabulary/PROPruleMode
-                             "hybrid")
-	reasoner (.create (GenericRuleReasonerFactory/theInstance) config) ]
-    (try (registerBuiltins)
-	 (doseq [x urls]
-	   (cond
-            (file? x) (add-file core x)
-	    (vector? x) (.add core (get-model (nth x 0) (nth x 1)))
-	    (model? x) (.add core x)
-	    (rules? x) (.setRules reasoner (Rule/rulesFromURL x))
-	    (string? x) (.add core (get-model x)) ))
-	 (ModelFactory/createInfModel reasoner core)
-	 (catch Exception e (prn e)))))
+(defn build-impl 
+  ([] (get-model))
+  ([urls]
+     (let [core (ModelFactory/createDefaultModel)
+           config (.addProperty (.createResource core)
+                                ReasonerVocabulary/PROPruleMode
+                                "hybrid")
+           reasoner (.create (GenericRuleReasonerFactory/theInstance) config) ]
+       (registerBuiltins)
+       (doseq [x urls]
+         (cond
+          (file? x) (add-file core x)
+          (vector? x) (.add core (get-model (nth x 0) (nth x 1)))
+          (model? x) (.add core x)
+          (rules? x) (.setRules reasoner (Rule/rulesFromURL x))
+          (string? x) (.add core (get-model x)) ))
+       (ModelFactory/createInfModel reasoner core))))
+
 
 (defn get-value [node]
   (cond
@@ -107,7 +111,6 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
     (str p query)))
 
 (defn bounce-impl [query target]
-  (try 
     (cond (string? target)
 	  (-> target
 	      (QueryExecutionFactory/sparqlService ,,,  (prefixes query))
@@ -118,11 +121,9 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
 	      QueryFactory/create
 	      (QueryExecutionFactory/create ,,, target)
 	      .execSelect
-	      format-result-set))
-    (catch Exception e (prn e))))
+	      format-result-set)))
 
 (defn ask-impl [query target]
-  (try
     (cond (string? target)
 	  (-> target
 	      (QueryExecutionFactory/sparqlService ,,, (prefixes query))
@@ -131,11 +132,9 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
 	  (-> (prefixes query)
 	      QueryFactory/create
 	      (QueryExecutionFactory/create ,,, target)
-	      .execAsk))
-    (catch Exception e (prn e))))
+	      .execAsk)))
 
 (defn pull-impl [query target]
-  (try 
     (cond (string? target)
 	  (-> target
 	      (QueryExecutionFactory/sparqlService ,,, (prefixes query))
@@ -144,31 +143,31 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
 	  (-> (prefixes query)
 	      QueryFactory/create
 	      (QueryExecutionFactory/create ,,, target)
-	      .execConstruct))
-    (catch Exception e (prn e))))
+	      .execConstruct)))
 
 (defn make-triple [s p o]
   (cond (.startsWith s "_:") (cond (uri? p) (Triple/create
-                                             (NodeFactory/createAnon s)
+                                             (NodeFactory/createAnon (AnonId. s))
                                              (NodeFactory/createURI p)
                                              o)
                                    :else (throw
                                           (Exception. "Predicate must be a valid uri")))
-                                   
+        
         :else  (cond (not-every? uri? [s p]) (throw 
-                                                (Exception. "Every term must be a valid url"))
+                                              (Exception. "Every term must be a valid url"))
                      :else (Triple/create
                             (NodeFactory/createURI s)
                             (NodeFactory/createURI p)
                             o))))
-  
+
 (defn make-literal [x type-mapper]
   (NodeFactory/createLiteral 
    (str x) 
    (.getTypeByValue type-mapper x)))
 
 (defn resource-fact-impl [s p o]
-  (cond (uri? o) (make-triple s p (NodeFactory/createURI o))                 
+  (cond (uri? o) (make-triple s p (NodeFactory/createURI o))
+        (.startsWith o "_:") (make-triple s p (NodeFactory/createAnon (AnonId. o)))
         :else (throw (Exception. "Object must be a valid uri"))))
 
 
@@ -180,4 +179,13 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
                  (make-triple s p (make-literal (XSDDateTime. cal) tm)))
      :else (make-triple s p (make-literal o tm)))))
 
-
+(defn push-impl [m triples]
+  (let [qda (QuadDataAcc.)]
+    (doseq [t triples] (.addTriple qda t))
+    (cond (model? m) (UpdateAction/execute 
+                      (UpdateDataInsert. qda) 
+                      m)
+          (uri? m) (-> (UpdateExecutionFactory/createRemoteForm (UpdateDataInsert. qda) m) 
+                       .execute)
+          :else (throw (Exception. (str "Target must be either a Jena model "
+                                        "or a uri to a sparql endpoint"))))))

@@ -19,18 +19,18 @@ build [ & targets ]
 
 Takes n-many arguments and returns an RDF model.  These arguments can be
 	
--   Strings for relative or absolute pathnames for RDF files
--   Strings for URI's that resolve to an RDF file online
--   Vectors for RDF files where the first element is the URI/pathname, and the 
+- Strings for relative or absolute pathnames for RDF files
+- Strings for URI's that resolve to an RDF file online
+- Vectors for RDF files where the first element is the URI/pathname, and the 
   second element is the language (when the file suffix isn't sufficient).
   Valid language strings (following Jena) are:
-	-   "RDF/XML"
-	-   "N-TRIPLES"
-	-   "TTL"
-	-   "N3"
--   Strings for Jena Rules files (must end with ".rules" in the filename)
--   RDF models previously created with the build function
--   A Jena model
+	- "RDF/XML"
+	- "N-TRIPLES"
+	- "TTL"
+	- "N3"
+- Strings for Jena Rules files (must end with ".rules" in the filename)
+- RDF models previously created with the build function
+- A Jena model
 		
 bounce [ query target ]
 ====
@@ -42,8 +42,8 @@ the following keys:
 
 The arguments are:
 	
--   query: a SPARQL Select query string
--   target: either a URI string for a Sparql Endpoint or an RDF model
+- query: a SPARQL Select query string
+- target: either a URI string for a Sparql Endpoint or an RDF model
 		
 ask [ query target ]
 ====
@@ -51,8 +51,8 @@ ask [ query target ]
 This executes an ASK query against an RDF model, returning a Boolean 
 value.  The arguments are:
 
--   query: a SPARQL Ask query string
--   target: either a URI string for a Sparql Endpoint or an RDF model
+- query: a SPARQL Ask query string
+- target: either a URI string for a Sparql Endpoint or an RDF model
 		
 pull [ query target ]
 ====
@@ -60,8 +60,8 @@ pull [ query target ]
 This executes a CONSTRUCT query against an RDF model, returning a 
 new RDF model.  The arguments are:
 
-- 	query: a SPARQL Construct query string
-- 	target: either a URI string for a Sparql Endpoint or an RDF model
+- query: a SPARQL Construct query string
+- target: either a URI string for a Sparql Endpoint or an RDF model
 
 stash [ model target ]
 ====
@@ -75,6 +75,17 @@ provided 'target' parameter).
 - target: a string for a relative or absolute pathname for the file to write to
 
 
+resource-fact, literal-fact [subject predicate object]
+====
+
+These functions return Jena triples, which can be pushed into a model.
+
+- subject: A string that is a valid uri or a string starting with '_:', indicating a blank node
+- predicate: A string that is a valid uri
+- object: 
+-- resource-fact: A string that is a valid uri, or a string starting with '_:', indicating a blank node.  Will be interpreted as an RDF resource.
+-- literal-fact: Either a string, integer, long, double, boolean, or date (java.util.Date).  The value will be converted to an appropriate RDF datatype.  If the conversion fails, either an exception will be thrown or a nil will be returned (depending on how crazy the submitted value is).
+
 Usage
 ----
 
@@ -83,9 +94,13 @@ Usage
 ```clj
 (def c "construct {?x <http://seabass.foo/bar> ?y}
 	{ ?y <http://example.org/baz> ?x }")
-(build ["data/my-ontology.rdf" "TTL"] 
+(def m (build ["data/my-ontology.rdf" "TTL"] 
        "http://way.out.there/my-data.nt" 
-       (pull c "http://my-endpoint/sparql"))
+       (pull c "http://my-endpoint/sparql")))
+(def r1 (resource-fact "http://foo/luke" "http://foo/sibling" "http://foo/leia"))
+(def r2 (resource-fact "_:v" "http://foo/father" "http://foo/luke"))
+(def l1 (literal-fact "_:v" "http://foo/wears" "http://foo/cape"))
+(push m r1 r2 l1)
 ```
 	
 -   Ask whether a Sparql endpoint is up
@@ -103,6 +118,8 @@ Usage
 (def m  (build "data/my-ont.ttl" "data/your-ont.owl"))
 (bounce q m)
 ```
+
+
 
 Built-ins
 ----
