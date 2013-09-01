@@ -140,10 +140,9 @@
         l4 (literal-fact "_:x" (sea "name") "Jimmy")
         l5 (literal-fact "_:y" (sea "weight") 100.5)]
     (is (= 1 (.size m)))
-    (push m r1)
+    (push m [r1])
     (is (= 2 (.size m)))
-    (push m r2 r3 l1 l2 l3)
-    (apply push [m l4 l5])
+    (push m [r2 r3 l1 l2 l3 l4 l5])
     (is (= 9 (.size m)))
     (is (= "Jimmy" (-> (bounce q1 m) :data (nth 0) :n)))
     (is (= 0 (-> (bounce q2 m) :data count)))))

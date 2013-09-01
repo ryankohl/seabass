@@ -103,10 +103,10 @@ These functions return Jena triples, which can be pushed into a model.
 - predicate: A string that is a valid uri
 - object: Either a string, integer, long, double, boolean, or date (java.util.Date).  The value will be converted to an appropriate RDF datatype.  If the conversion fails, either an exception will be thrown or a nil will be returned (depending on how crazy the submitted value is).
 
-push [model & triples]
+push [model triples]
 ====
 
-Asserts one or more triples into the target, which can either be a Jena model or a remote endpoint uri string.
+Asserts a collection of  triples into the target, which can either be a Jena model or a remote endpoint uri string.
 
 Usage
 ----
@@ -128,7 +128,7 @@ Usage
 (def r1 (resource-fact "http://foo/luke" "http://foo/sibling" "http://foo/leia"))
 (def r2 (resource-fact "_:v" "http://foo/father" "http://foo/luke"))
 (def l1 (literal-fact "_:v" "http://foo/wears" "http://foo/cape"))
-(push endpoint r1 r2 l1)
+(push endpoint [r1 r2 l1])
 ```
 	
 -   Ask whether a Sparql endpoint is up

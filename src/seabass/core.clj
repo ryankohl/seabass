@@ -42,8 +42,8 @@
   provided 'target' parameter)."
   (stash-impl model target))
 
-(defn push [target & facts]
-  "Asserts one or more facts (ie a Jena triples) into the target, which can
+(defn push [target facts]
+  "Asserts a collection of facts (ie of Jena triples) into the target, which can
    be either a model or remote endpoint uri."
   (push-impl target facts))
 
