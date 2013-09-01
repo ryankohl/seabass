@@ -112,6 +112,8 @@ Usage
        (pull c "http://my-endpoint/sparql")))
 ```
 
+- Push three facts into a locally-hosted Sesame repo called 'test'
+
 ```clj
 (def endpoint "http://localhost:8080/openrdf-sesame/repositories/test/statements")
 (def r1 (resource-fact "http://foo/luke" "http://foo/sibling" "http://foo/leia"))
