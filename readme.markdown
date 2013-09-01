@@ -1,7 +1,16 @@
 seabass
 ----
 
-This is a small library to make it easier to work with RDF and SPARQL in Clojure 1.4.  
+This is a small library to make it easier to work with RDF and SPARQL in Clojure 1.4.  Uploaded to Clojars at http://clojars.org/seabass
+
+Leiningen
+----
+
+Add the following line to your dependencies:
+
+```clj
+[seabass "2.1"]
+```
 
 Default Prefixes
 ----
