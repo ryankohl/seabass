@@ -8,7 +8,8 @@
   (pull query target) call."
   (build-impl targets))
 
-(defn bounce [query target]
+(defn bounce 
+  ([query target]
   "Returns a map using a SELECT query.  If the 
   target is a URI, then a Sparql Endpoint is 
   interrogated.  If the target is a model, then the
@@ -19,6 +20,9 @@
     :data - a list of maps whose keys are the variables listed
             in vars"
   (bounce-impl query target))
+  ([query target username password]
+     (bounce-impl query target username password)))
+
 
 (defn ask [query target]
   "Returns a boolean using an ASK query.  If the 

@@ -12,6 +12,8 @@
   (:import [com.hp.hpl.jena.graph NodeFactory Triple])
   (:import [com.hp.hpl.jena.sparql.modify.request QuadDataAcc UpdateDataInsert])
   (:import [com.hp.hpl.jena.update UpdateAction UpdateExecutionFactory])
+  (:import [org.apache.jena.atlas.web.auth PreemptiveBasicAuthenticator ScopedAuthenticator])
+  (:import [java.net URI])
   (:use [clojure.java.io])
   (:require [seabass.builtin :as builtin]
             [clojure.string :as str]))
@@ -110,7 +112,8 @@ prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
     (str p query)))
 
-(defn bounce-impl [query target]
+(defn bounce-impl 
+  ([query target]
     (cond (string? target)
 	  (-> target
 	      (QueryExecutionFactory/sparqlService ,,,  (prefixes query))
@@ -122,6 +125,18 @@ prefix owl:     <http://www.w3.org/2002/07/owl#>  \n"]
 	      (QueryExecutionFactory/create ,,, target)
 	      .execSelect
 	      format-result-set)))
+  ([query target username password]
+     (cond (string? target)
+           (let [auth (PreemptiveBasicAuthenticator.
+                       (ScopedAuthenticator. (URI. target) 
+                                             username 
+                                             (char-array password)))]
+             (-> target
+                 (QueryExecutionFactory/sparqlService ,,,  (prefixes query) auth)
+                 .execSelect
+                 format-result-set))
+             (model? target)
+             "Basic auth only defined for remote models")))
 
 (defn ask-impl [query target]
     (cond (string? target)
